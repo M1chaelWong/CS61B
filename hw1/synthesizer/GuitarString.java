@@ -1,5 +1,7 @@
 // TODO: Make sure to make this class a part of the synthesizer package
-//package <package name>;
+package synthesizer;
+
+import java.util.Iterator;
 
 //Make sure this class is public
 public class GuitarString {
@@ -10,10 +12,14 @@ public class GuitarString {
     private static final double DECAY = .996; // energy decay factor
 
     /* Buffer for storing sound data. */
-    private BoundedQueue<Double> buffer;
+    private  ArrayRingBuffer<Double> buffer;
 
     /* Create a guitar string of the given frequency.  */
     public GuitarString(double frequency) {
+        buffer = new ArrayRingBuffer<>((int)Math.round(SR / frequency));
+//        for (int i = 0; i < buffer.capacity(); i ++) {
+//            buffer.enqueue(0.0);
+//        }
         // TODO: Create a buffer with capacity = SR / frequency. You'll need to
         //       cast the result of this divsion operation into an int. For better
         //       accuracy, use the Math.round() function before casting.
@@ -23,6 +29,9 @@ public class GuitarString {
 
     /* Pluck the guitar string by replacing the buffer with white noise. */
     public void pluck() {
+        for (int i = 0; i < buffer.capacity(); i ++) {
+            buffer.enqueue(Math.random() - 0.5);
+        }
         // TODO: Dequeue everything in the buffer, and replace it with random numbers
         //       between -0.5 and 0.5. You can get such a number by using:
         //       double r = Math.random() - 0.5;
@@ -34,6 +43,8 @@ public class GuitarString {
      * the Karplus-Strong algorithm. 
      */
     public void tic() {
+        double temp = 0.5 * DECAY * (buffer.dequeue() + buffer.peek());
+        buffer.enqueue(temp);
         // TODO: Dequeue the front sample and enqueue a new sample that is
         //       the average of the two multiplied by the DECAY factor.
         //       Do not call StdAudio.play().
@@ -42,6 +53,16 @@ public class GuitarString {
     /* Return the double at the front of the buffer. */
     public double sample() {
         // TODO: Return the correct thing.
-        return 0;
+        return buffer.peek();
+    }
+
+    public static void main(String[] args) {
+        GuitarString guitarString = new GuitarString(10000);
+        guitarString.pluck();
+        System.out.println(guitarString.buffer.capacity());
+        Iterator<Double> iter = guitarString.buffer.iterator();
+        while (iter.hasNext()) {
+            System.out.println(iter.next());
+        }
     }
 }

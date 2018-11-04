@@ -1,3 +1,5 @@
+import com.sun.corba.se.spi.ior.TaggedProfileTemplate;
+
 public class LinkedListDeque<T> implements Deque<T>{
     private ItemNode sentinel;
     private int size;
@@ -22,7 +24,6 @@ public class LinkedListDeque<T> implements Deque<T>{
         size = 0;
     }
 
-    @Override
     public void addFirst(T item){
         ItemNode first = sentinel.next;
         sentinel.next = new ItemNode(sentinel,item,sentinel.next);
@@ -30,7 +31,6 @@ public class LinkedListDeque<T> implements Deque<T>{
         size ++;
     }
 
-    @Override
     public void addLast(T item){
         ItemNode last = sentinel.prev;
         sentinel.prev = new ItemNode(last, item,sentinel);
@@ -38,17 +38,14 @@ public class LinkedListDeque<T> implements Deque<T>{
         size ++;
     }
 
-    @Override
     public boolean isEmpty(){
         return (size == 0);
     }
 
-    @Override
     public int size() {
         return size;
     }
 
-    @Override
     public void printDeque(){
         ItemNode node = sentinel.next;
         for (int i = 0; i < size;i ++) {
@@ -57,7 +54,6 @@ public class LinkedListDeque<T> implements Deque<T>{
         }
     }
 
-    @Override
     public T removeFirst(){
         T item = sentinel.next.Item;
         sentinel.next = sentinel.next.next;
@@ -66,7 +62,6 @@ public class LinkedListDeque<T> implements Deque<T>{
         return item;
     }
 
-    @Override
     public T removeLast(){
         T item = sentinel.prev.Item;
         sentinel.prev = sentinel.prev.prev;
@@ -75,7 +70,6 @@ public class LinkedListDeque<T> implements Deque<T>{
         return item;
     }
 
-    @Override
     public T get(int index){
         ItemNode node = sentinel;
         for (int i = -1; i < index; i ++) {
@@ -99,6 +93,12 @@ public class LinkedListDeque<T> implements Deque<T>{
 
 
     public static void main(String[] args) {
-
+        LinkedListDeque<String> L = new LinkedListDeque<>();
+        L.addLast("happy");
+        L.addLast("happy_birthday");
+        L.addFirst("happyNewyear");
+        L.removeFirst();
+        System.out.println(L.getRecursive(1));
+        L.printDeque();
     }
 }
